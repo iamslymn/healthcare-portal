@@ -28,6 +28,9 @@ export const ThemeModeContext = createContext({
   mode: 'light' as 'light' | 'dark'
 });
 
+// Export the useThemeMode hook
+export const useThemeMode = () => useContext(ThemeModeContext);
+
 // Get the base path for GitHub Pages deployment
 const basePath = import.meta.env.BASE_URL || '/';
 
