@@ -1,119 +1,109 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store';
+import { updateUser } from '../store/slices/authSlice';
 import {
   Container,
   Grid,
-  Paper,
-  Typography,
-  Avatar,
   Box,
-  Button,
+  Typography,
   TextField,
-  Divider,
-  Switch,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  Tab,
+  Button,
+  Avatar,
   Tabs,
+  Tab,
+  Paper,
+  Divider,
   IconButton,
-  Alert,
   Badge,
   Snackbar,
+  Alert,
+  Card,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemSecondaryAction,
 } from '@mui/material';
 import {
   Edit as EditIcon,
-  Save as SaveIcon,
-  Cancel as CancelIcon,
-  Notifications as NotificationsIcon,
-  Security as SecurityIcon,
+  PhotoCamera,
   Language as LanguageIcon,
   Palette as PaletteIcon,
-  PhotoCamera as PhotoCameraIcon,
+  Notifications as NotificationsIcon,
+  Security as SecurityIcon,
+  Lock as LockIcon,
 } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store';
-import { updateUser } from '../store/slices/authSlice';
+import styled from 'styled-components';
 import { useThemeMode } from '../App';
-import api from '../api/axios';
+import api from '../services/api';
 
+// Styled components
 const StyledPaper = styled(Paper)<{ $isDark: boolean }>`
-  background: ${props => props.$isDark ? '#1a1a1a' : '#ffffff'};
-  border: 1px solid ${props => props.$isDark ? '#333333' : 'rgba(0, 0, 0, 0.12)'};
-  color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.85)' : 'inherit'};
-  transition: all 0.3s ease;
-
-  .MuiTypography-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.95)' : 'inherit'};
-  }
-
-  .MuiTypography-colorTextSecondary {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'};
-  }
-
-  .MuiIconButton-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.54)'};
-    &:hover {
-      color: ${props => props.$isDark ? '#ffffff' : 'rgba(0, 0, 0, 0.87)'};
-    }
-  }
-
-  .MuiDivider-root {
-    border-color: ${props => props.$isDark ? '#303030' : 'rgba(0, 0, 0, 0.12)'};
-  }
+  padding: 24px;
+  margin-bottom: 24px;
+  background-color: ${props => props.$isDark ? '#1a1a1a' : '#ffffff'};
+  border: 1px solid ${props => props.$isDark ? '#333333' : '#e0e0e0'};
+  color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.87)'};
+  box-shadow: ${props => props.$isDark ? '0 4px 20px rgba(0, 0, 0, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
+  border-radius: 8px;
 `;
 
 const StyledTextField = styled(TextField)<{ $isDark: boolean }>`
-  .MuiOutlinedInput-root {
-    background-color: ${props => props.$isDark ? '#141414' : '#ffffff'};
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.95)' : 'inherit'};
-    &:hover .MuiOutlinedInput-notchedOutline {
-      border-color: ${props => props.$isDark ? '#404040' : 'rgba(0, 0, 0, 0.23)'};
-    }
-    &.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: ${props => props.$isDark ? '#1976d2' : '#1976d2'};
-    }
+  .MuiInputBase-root {
+    background-color: ${props => props.$isDark ? '#2a2a2a' : '#ffffff'};
+    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.87)'};
   }
-  .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.$isDark ? '#303030' : 'rgba(0, 0, 0, 0.23)'};
-  }
+  
   .MuiInputLabel-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : undefined};
-    &.Mui-focused {
-      color: ${props => props.$isDark ? '#1976d2' : '#1976d2'};
-    }
+    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'};
+  }
+  
+  .MuiOutlinedInput-notchedOutline {
+    border-color: ${props => props.$isDark ? '#444444' : '#e0e0e0'};
+  }
+  
+  &:hover .MuiOutlinedInput-notchedOutline {
+    border-color: ${props => props.$isDark ? '#666666' : '#b0b0b0'};
+  }
+  
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${props => props.$isDark ? '#90caf9' : '#1976d2'};
   }
 `;
 
 const StyledTabs = styled(Tabs)<{ $isDark: boolean }>`
-  .MuiTab-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : undefined};
-    &.Mui-selected {
-      color: ${props => props.$isDark ? '#1976d2' : undefined};
-    }
-  }
   .MuiTabs-indicator {
-    background-color: ${props => props.$isDark ? '#1976d2' : undefined};
+    background-color: ${props => props.$isDark ? '#90caf9' : '#1976d2'};
+  }
+  
+  .MuiTab-root {
+    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'};
+    
+    &.Mui-selected {
+      color: ${props => props.$isDark ? '#90caf9' : '#1976d2'};
+    }
   }
 `;
 
 const StyledListItem = styled(ListItem)<{ $isDark: boolean }>`
-  &:hover {
-    background-color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.02)'};
-  }
+  border-bottom: 1px solid ${props => props.$isDark ? '#333333' : '#f0f0f0'};
+  
   .MuiListItemIcon-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : undefined};
+    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.54)'};
   }
-  .MuiListItemText-primary {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.95)' : 'inherit'};
-  }
-  .MuiListItemText-secondary {
+  
+  .MuiTypography-colorTextSecondary {
     color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'};
   }
 `;
 
+// Tab Panel component
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -141,191 +131,230 @@ const TabPanel = (props: TabPanelProps) => {
 };
 
 const Profile = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
   const { mode } = useThemeMode();
   const isDark = mode === 'dark';
+  
   const [tabValue, setTabValue] = useState(0);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [profilePicture, setProfilePicture] = useState(user?.profilePicture || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  const [settings, setSettings] = useState({
-    emailNotifications: true,
-    smsNotifications: false,
-    soundNotifications: true,
-    twoFactorAuth: false,
-    language: 'English',
-    privacy: 'public',
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    email: user?.email || '',
+    phoneNumber: user?.phoneNumber || '',
+    // Doctor profile fields
+    specialty: user?.specialty || '',
+    education: user?.education || '',
+    experience: user?.experience || 0,
+    location: user?.location || '',
+    consultationFee: user?.consultationFee ? parseInt(user?.consultationFee.replace('$', '')) : 0,
+    languages: user?.languages || [],
+    availability: user?.availability || '',
+    about: user?.about || '',
   });
-
+  
+  // Settings state
+  const [settings, setSettings] = useState({
+    language: 'English',
+    theme: mode,
+    notifications: 'All',
+    privacy: 'Public',
+  });
+  
+  // Update form data when user changes
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phoneNumber: user.phoneNumber || '',
+        // Doctor profile fields
+        specialty: user.specialty || '',
+        education: user.education || '',
+        experience: user.experience || 0,
+        location: user.location || '',
+        consultationFee: user.consultationFee ? parseInt(user.consultationFee.replace('$', '')) : 0,
+        languages: user.languages || [],
+        availability: user.availability || '',
+        about: user.about || '',
+      });
+      setProfilePicture(user.profilePicture || '');
+    }
+  }, [user]);
+  
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
-
+  
   const handleProfilePictureClick = () => {
     fileInputRef.current?.click();
   };
-
+  
   const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      try {
-        const formData = new FormData();
-        formData.append('profilePicture', file);
-
-        const response = await api.post('/users/profile-picture', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        if (response.data.success) {
-          setProfilePicture(response.data.profilePictureUrl);
-          dispatch(updateUser({
-            ...user!,
-            profilePicture: response.data.profilePictureUrl
-          }));
-          setSuccessMessage('Profile picture updated successfully');
-        } else {
-          throw new Error(response.data.message || 'Failed to update profile picture');
-        }
-      } catch (error: any) {
-        setErrorMessage(error.response?.data?.message || 'Failed to update profile picture');
-        console.error('Error uploading profile picture:', error);
-      }
-    }
-  };
-
-  const handleSettingChange = (setting: keyof typeof settings) => {
-    setSettings(prev => ({
-      ...prev,
-      [setting]: !prev[setting],
-    }));
-  };
-
-  const handleSaveChanges = async () => {
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+    
     try {
-      // Add your save changes logic here
-      const response = await api.put('/users/profile', {
-        // Add the fields you want to update
-        profilePicture,
-        // Add other profile fields
+      const response = await api.post('/users/profile-picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-
-      setSuccessMessage('Profile updated successfully');
-      setIsEditing(false);
-    } catch (error) {
-      setErrorMessage('Failed to update profile');
-      console.error('Error updating profile:', error);
+      
+      if (response.data.success) {
+        setProfilePicture(response.data.profilePictureUrl);
+        dispatch(updateUser({ ...user!, profilePicture: response.data.profilePictureUrl }));
+        setSuccessMessage('Profile picture updated successfully');
+      } else {
+        throw new Error(response.data.message || 'Failed to upload profile picture');
+      }
+    } catch (error: any) {
+      console.error('Error uploading profile picture:', error);
+      setErrorMessage(error.message || 'Failed to upload profile picture');
     }
   };
-
+  
+  const handleSettingChange = (setting: keyof typeof settings) => (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSettings({
+      ...settings,
+      [setting]: event.target.value,
+    });
+  };
+  
+  const handleSaveProfile = async () => {
+    try {
+      // Format the values for doctor profiles
+      let updatedData = { ...formData };
+      
+      if (user?.role === 'doctor' && formData.consultationFee) {
+        updatedData.consultationFee = `$${formData.consultationFee}`;
+      }
+      
+      // Update the user profile
+      await dispatch(updateUser(updatedData));
+      setSuccessMessage('Profile updated successfully!');
+      setIsEditing(false);
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      setErrorMessage(error.message || 'Failed to update profile. Please try again.');
+    }
+  };
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  
+  const handleSelectChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const name = e.target.name as string;
+    setFormData({
+      ...formData,
+      [name]: e.target.value,
+    });
+  };
+  
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          {successMessage}
-        </Alert>
-      )}
-      {errorMessage && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {errorMessage}
-        </Alert>
-      )}
-
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid container spacing={3}>
-        {/* Profile Summary */}
-        <Grid item xs={12} md={4}>
-          <StyledPaper $isDark={isDark} sx={{ p: 3, textAlign: 'center' }}>
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: 'none' }}
-              ref={fileInputRef}
-              onChange={handleProfilePictureUpload}
-            />
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
             <Badge
               overlap="circular"
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               badgeContent={
                 <IconButton
                   sx={{
-                    bgcolor: isDark ? 'rgba(25, 118, 210, 0.2)' : 'primary.main',
-                    color: isDark ? '#1976d2' : 'white',
+                    bgcolor: isDark ? '#2196f3' : '#1976d2',
+                    color: '#fff',
                     '&:hover': {
-                      bgcolor: isDark ? 'rgba(25, 118, 210, 0.3)' : 'primary.dark',
+                      bgcolor: isDark ? '#1976d2' : '#1565c0',
                     },
                     width: 32,
                     height: 32,
                   }}
                   onClick={handleProfilePictureClick}
                 >
-                  <PhotoCameraIcon sx={{ fontSize: 18 }} />
+                  <PhotoCamera sx={{ fontSize: 16 }} />
                 </IconButton>
               }
             >
               <Avatar
-                src={profilePicture || user?.profilePicture}
-                alt={user?.firstName}
+                src={profilePicture || '/avatars/default-avatar.png'}
                 sx={{
                   width: 120,
                   height: 120,
-                  margin: '0 auto 16px',
-                  bgcolor: isDark ? 'rgba(25, 118, 210, 0.2)' : 'primary.main',
-                  color: isDark ? '#1976d2' : 'white',
+                  border: isDark ? '4px solid #333' : '4px solid #f0f0f0',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                   cursor: 'pointer',
-                  border: `3px solid ${isDark ? '#333333' : '#f0f0f0'}`,
-                  boxShadow: `0 4px 12px ${isDark ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.1)'}`,
                 }}
                 onClick={handleProfilePictureClick}
-              >
-                {!profilePicture && user?.firstName?.[0]}{!profilePicture && user?.lastName?.[0]}
-              </Avatar>
+              />
             </Badge>
-            <Typography variant="h5" gutterBottom>
-              {user?.firstName} {user?.lastName}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {user?.email}
-            </Typography>
-            <Button
-              variant="outlined"
-              startIcon={isEditing ? <SaveIcon /> : <EditIcon />}
-              onClick={() => setIsEditing(!isEditing)}
-              sx={{
-                mt: 2,
-                borderColor: isDark ? '#303030' : undefined,
-                color: isDark ? 'rgba(255, 255, 255, 0.85)' : undefined,
-                '&:hover': {
-                  borderColor: isDark ? '#1976d2' : undefined,
-                  backgroundColor: isDark ? 'rgba(25, 118, 210, 0.08)' : undefined,
-                },
-              }}
-            >
-              {isEditing ? 'Save Profile' : 'Edit Profile'}
-            </Button>
-          </StyledPaper>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              accept="image/*"
+              onChange={handleProfilePictureUpload}
+            />
+            <Box sx={{ ml: 3 }}>
+              <Typography variant="h4" gutterBottom>
+                {user?.firstName} {user?.lastName}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                {user?.email}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  display: 'inline-block',
+                  bgcolor: user?.role === 'doctor' ? '#4caf50' : '#2196f3',
+                  color: '#fff',
+                  px: 1,
+                  py: 0.5,
+                  borderRadius: 1,
+                  mt: 1,
+                  textTransform: 'capitalize',
+                }}
+              >
+                {user?.role}
+              </Typography>
+            </Box>
+          </Box>
         </Grid>
-
-        {/* Profile Details */}
-        <Grid item xs={12} md={8}>
-          <StyledPaper $isDark={isDark} sx={{ p: 3 }}>
+        
+        <Grid item xs={12}>
+          <StyledPaper $isDark={isDark}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <StyledTabs 
-                value={tabValue} 
-                onChange={handleTabChange} 
+              <StyledTabs
+                value={tabValue}
+                onChange={handleTabChange}
                 $isDark={isDark}
+                variant="scrollable"
+                scrollButtons="auto"
                 aria-label="profile tabs"
               >
-                <Tab label="Personal Info" id="profile-tab-0" />
-                <Tab label="Settings" id="profile-tab-1" />
-                <Tab label="Security" id="profile-tab-2" />
+                <Tab label="Personal Information" id="profile-tab-0" />
+                <Tab label="Security" id="profile-tab-1" />
+                <Tab label="Notifications" id="profile-tab-2" />
+                <Tab label="Privacy" id="profile-tab-3" />
               </StyledTabs>
             </Box>
-
+            
             <TabPanel value={tabValue} index={0}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
@@ -333,7 +362,9 @@ const Profile = () => {
                     $isDark={isDark}
                     fullWidth
                     label="First Name"
-                    defaultValue={user?.firstName}
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     disabled={!isEditing}
                   />
                 </Grid>
@@ -342,7 +373,9 @@ const Profile = () => {
                     $isDark={isDark}
                     fullWidth
                     label="Last Name"
-                    defaultValue={user?.lastName}
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     disabled={!isEditing}
                   />
                 </Grid>
@@ -351,14 +384,238 @@ const Profile = () => {
                     $isDark={isDark}
                     fullWidth
                     label="Email"
-                    defaultValue={user?.email}
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     disabled={!isEditing}
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <StyledTextField
+                    $isDark={isDark}
+                    fullWidth
+                    label="Phone Number"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                </Grid>
+                
+                {/* Doctor profile fields */}
+                {user?.role === 'doctor' && (
+                  <>
+                    <Grid item xs={12}>
+                      <Divider sx={{ my: 2 }} />
+                      <Typography variant="h6" gutterBottom>
+                        Professional Information
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" paragraph>
+                        Complete your professional profile to be visible in the Find Doctors section.
+                      </Typography>
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                      <FormControl fullWidth disabled={!isEditing}>
+                        <InputLabel>Specialty</InputLabel>
+                        <Select
+                          name="specialty"
+                          value={formData.specialty}
+                          onChange={handleSelectChange as any}
+                          label="Specialty"
+                        >
+                          <MenuItem value="Cardiology">Cardiology</MenuItem>
+                          <MenuItem value="Dermatology">Dermatology</MenuItem>
+                          <MenuItem value="Pediatrics">Pediatrics</MenuItem>
+                          <MenuItem value="Orthopedics">Orthopedics</MenuItem>
+                          <MenuItem value="Neurology">Neurology</MenuItem>
+                          <MenuItem value="Psychiatry">Psychiatry</MenuItem>
+                          <MenuItem value="General Medicine">General Medicine</MenuItem>
+                          <MenuItem value="Family Medicine">Family Medicine</MenuItem>
+                          <MenuItem value="Internal Medicine">Internal Medicine</MenuItem>
+                          <MenuItem value="Obstetrics & Gynecology">Obstetrics & Gynecology</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                      <StyledTextField
+                        $isDark={isDark}
+                        fullWidth
+                        label="Education"
+                        name="education"
+                        value={formData.education}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        placeholder="MD - Cardiology, MBBS"
+                      />
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                      <StyledTextField
+                        $isDark={isDark}
+                        fullWidth
+                        label="Years of Experience"
+                        name="experience"
+                        type="number"
+                        value={formData.experience}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        InputProps={{ inputProps: { min: 0, max: 50 } }}
+                      />
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                      <StyledTextField
+                        $isDark={isDark}
+                        fullWidth
+                        label="Location"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        placeholder="City, State"
+                      />
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                      <StyledTextField
+                        $isDark={isDark}
+                        fullWidth
+                        label="Consultation Fee ($)"
+                        name="consultationFee"
+                        type="number"
+                        value={formData.consultationFee}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        InputProps={{ inputProps: { min: 0 } }}
+                      />
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                      <FormControl fullWidth disabled={!isEditing}>
+                        <InputLabel>Availability</InputLabel>
+                        <Select
+                          name="availability"
+                          value={formData.availability}
+                          onChange={handleSelectChange as any}
+                          label="Availability"
+                        >
+                          <MenuItem value="Available today">Available today</MenuItem>
+                          <MenuItem value="Available tomorrow">Available tomorrow</MenuItem>
+                          <MenuItem value="Available in 2 days">Available in 2 days</MenuItem>
+                          <MenuItem value="Available in 3 days">Available in 3 days</MenuItem>
+                          <MenuItem value="Available next week">Available next week</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        $isDark={isDark}
+                        fullWidth
+                        label="About"
+                        name="about"
+                        value={formData.about}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        multiline
+                        rows={4}
+                        placeholder="Describe your practice, specializations, and approach to patient care"
+                      />
+                    </Grid>
+                  </>
+                )}
               </Grid>
+              
+              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                {isEditing ? (
+                  <>
+                    <Button 
+                      variant="outlined" 
+                      onClick={() => setIsEditing(false)} 
+                      sx={{ mr: 2 }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      variant="contained" 
+                      color="primary" 
+                      onClick={handleSaveProfile}
+                    >
+                      Save Changes
+                    </Button>
+                  </>
+                ) : (
+                  <Button 
+                    variant="contained" 
+                    color="primary" 
+                    startIcon={<EditIcon />} 
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit Profile
+                  </Button>
+                )}
+              </Box>
             </TabPanel>
-
+            
             <TabPanel value={tabValue} index={1}>
+              <List>
+                <StyledListItem $isDark={isDark}>
+                  <ListItemIcon>
+                    <LockIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Password"
+                    secondary="Last changed 3 months ago"
+                  />
+                  <ListItemSecondaryAction>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        borderColor: isDark ? '#303030' : undefined,
+                        color: isDark ? 'rgba(255, 255, 255, 0.85)' : undefined,
+                        '&:hover': {
+                          borderColor: isDark ? '#1976d2' : undefined,
+                          backgroundColor: isDark ? 'rgba(25, 118, 210, 0.08)' : undefined,
+                        },
+                      }}
+                    >
+                      Change
+                    </Button>
+                  </ListItemSecondaryAction>
+                </StyledListItem>
+                <Divider />
+                <StyledListItem $isDark={isDark}>
+                  <ListItemIcon>
+                    <SecurityIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Two-Factor Authentication"
+                    secondary="Disabled"
+                  />
+                  <ListItemSecondaryAction>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        borderColor: isDark ? '#303030' : undefined,
+                        color: isDark ? 'rgba(255, 255, 255, 0.85)' : undefined,
+                        '&:hover': {
+                          borderColor: isDark ? '#1976d2' : undefined,
+                          backgroundColor: isDark ? 'rgba(25, 118, 210, 0.08)' : undefined,
+                        },
+                      }}
+                    >
+                      Enable
+                    </Button>
+                  </ListItemSecondaryAction>
+                </StyledListItem>
+              </List>
+            </TabPanel>
+            
+            <TabPanel value={tabValue} index={2}>
               <List>
                 <StyledListItem $isDark={isDark}>
                   <ListItemIcon>
@@ -366,79 +623,63 @@ const Profile = () => {
                   </ListItemIcon>
                   <ListItemText
                     primary="Email Notifications"
-                    secondary="Receive email notifications for appointments and updates"
+                    secondary={settings.notifications}
                   />
                   <ListItemSecondaryAction>
-                    <Switch
-                      edge="end"
-                      checked={settings.emailNotifications}
-                      onChange={() => handleSettingChange('emailNotifications')}
-                    />
-                  </ListItemSecondaryAction>
-                </StyledListItem>
-                <Divider />
-                <StyledListItem $isDark={isDark}>
-                  <ListItemIcon>
-                    <NotificationsIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="SMS Notifications"
-                    secondary="Receive SMS notifications for appointments and updates"
-                  />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      edge="end"
-                      checked={settings.smsNotifications}
-                      onChange={() => handleSettingChange('smsNotifications')}
-                    />
-                  </ListItemSecondaryAction>
-                </StyledListItem>
-                <Divider />
-                <StyledListItem $isDark={isDark}>
-                  <ListItemIcon>
-                    <NotificationsIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Sound Notifications"
-                    secondary="Play sound for notifications"
-                  />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      edge="end"
-                      checked={settings.soundNotifications}
-                      onChange={() => handleSettingChange('soundNotifications')}
-                    />
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        borderColor: isDark ? '#303030' : undefined,
+                        color: isDark ? 'rgba(255, 255, 255, 0.85)' : undefined,
+                        '&:hover': {
+                          borderColor: isDark ? '#1976d2' : undefined,
+                          backgroundColor: isDark ? 'rgba(25, 118, 210, 0.08)' : undefined,
+                        },
+                      }}
+                    >
+                      Change
+                    </Button>
                   </ListItemSecondaryAction>
                 </StyledListItem>
               </List>
             </TabPanel>
-
-            <TabPanel value={tabValue} index={2}>
+            
+            <TabPanel value={tabValue} index={3}>
               <List>
                 <StyledListItem $isDark={isDark}>
                   <ListItemIcon>
-                    <SecurityIcon />
+                    <LanguageIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Two-Factor Authentication"
-                    secondary="Add an extra layer of security to your account"
+                    primary="Language"
+                    secondary={settings.language}
                   />
                   <ListItemSecondaryAction>
-                    <Switch
-                      edge="end"
-                      checked={settings.twoFactorAuth}
-                      onChange={() => handleSettingChange('twoFactorAuth')}
-                    />
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        borderColor: isDark ? '#303030' : undefined,
+                        color: isDark ? 'rgba(255, 255, 255, 0.85)' : undefined,
+                        '&:hover': {
+                          borderColor: isDark ? '#1976d2' : undefined,
+                          backgroundColor: isDark ? 'rgba(25, 118, 210, 0.08)' : undefined,
+                        },
+                      }}
+                    >
+                      Change
+                    </Button>
                   </ListItemSecondaryAction>
                 </StyledListItem>
                 <Divider />
                 <StyledListItem $isDark={isDark}>
                   <ListItemIcon>
-                    <SecurityIcon />
+                    <PaletteIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Change Password"
-                    secondary="Update your account password"
+                    primary="Privacy"
+                    secondary={settings.privacy}
                   />
                   <ListItemSecondaryAction>
                     <Button
@@ -462,63 +703,23 @@ const Profile = () => {
           </StyledPaper>
         </Grid>
       </Grid>
-
-      {isEditing && (
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end',
-          mt: 3,
-          gap: 2
-        }}>
-          <Button 
-            variant="outlined" 
-            onClick={() => setIsEditing(false)}
-            sx={{
-              color: isDark ? 'rgba(255,255,255,0.85)' : undefined,
-              borderColor: isDark ? 'rgba(255,255,255,0.23)' : undefined,
-            }}
-          >
-            Cancel
-          </Button>
-          <Button 
-            variant="contained" 
-            onClick={handleSaveChanges}
-            sx={{
-              bgcolor: isDark ? '#2196f3' : undefined,
-              '&:hover': {
-                bgcolor: isDark ? '#1976d2' : undefined,
-              }
-            }}
-          >
-            Save Changes
-          </Button>
-        </Box>
-      )}
-
-      <Snackbar
-        open={!!successMessage}
-        autoHideDuration={6000}
-        onClose={() => setSuccessMessage(null)}
+      
+      <Snackbar 
+        open={!!successMessage} 
+        autoHideDuration={6000} 
+        onClose={() => setSuccessMessage('')}
       >
-        <Alert 
-          onClose={() => setSuccessMessage(null)} 
-          severity="success"
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={() => setSuccessMessage('')} severity="success">
           {successMessage}
         </Alert>
       </Snackbar>
-
-      <Snackbar
-        open={!!errorMessage}
-        autoHideDuration={6000}
-        onClose={() => setErrorMessage(null)}
+      
+      <Snackbar 
+        open={!!errorMessage} 
+        autoHideDuration={6000} 
+        onClose={() => setErrorMessage('')}
       >
-        <Alert 
-          onClose={() => setErrorMessage(null)} 
-          severity="error"
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={() => setErrorMessage('')} severity="error">
           {errorMessage}
         </Alert>
       </Snackbar>
