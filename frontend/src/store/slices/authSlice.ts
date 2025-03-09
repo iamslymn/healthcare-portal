@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import api from '../../api/axios';
+import api from '../../services/api';
+import { mockAuthService } from '../../services/mockApi';
+import { RegisterData, LoginCredentials } from '../../services/api';
+
+// Use mock API for testing
+const USE_MOCK_API = true;
 
 interface User {
   id: string;
@@ -28,31 +33,47 @@ const initialState: AuthState = {
 
 export const login = createAsyncThunk(
   'auth/login',
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+  async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/login', credentials);
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      return { token, user };
+      console.log('Logging in with credentials:', { ...credentials, password: '***HIDDEN***' });
+      
+      let response;
+      if (USE_MOCK_API) {
+        // Use mock API for testing
+        response = { data: await mockAuthService.login(credentials.email, credentials.password) };
+      } else {
+        // Use real API
+        response = await api.post('/auth/login', credentials);
+      }
+      
+      console.log('Login response:', response.data);
+      
+      // Store token and user in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed. Please check your credentials.');
+      return rejectWithValue(error.response?.data?.message || 'Login failed. Please try again.');
     }
   }
 );
 
 export const register = createAsyncThunk(
   'auth/register',
-  async (userData: {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    role?: string;
-    phoneNumber?: string;
-  }, { rejectWithValue }) => {
+  async (userData: RegisterData, { rejectWithValue }) => {
     try {
       console.log('Registering user with data:', { ...userData, password: '***HIDDEN***' });
-      const response = await api.post('/auth/register', userData);
+      
+      let response;
+      if (USE_MOCK_API) {
+        // Use mock API for testing
+        response = { data: await mockAuthService.register(userData) };
+      } else {
+        // Use real API
+        response = await api.post('/auth/register', userData);
+      }
+      
       console.log('Registration response:', response.data);
       
       // Store token and user in localStorage
