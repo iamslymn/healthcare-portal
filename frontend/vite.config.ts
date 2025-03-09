@@ -20,8 +20,7 @@ export default defineConfig({
     },
   },
   // Base path for GitHub Pages deployment
-  // Will be overridden by --base flag when building for GitHub Pages
-  base: process.env.NODE_ENV === 'production' ? '/healthcare-portal/' : '/',
+  base: './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

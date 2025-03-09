@@ -28,10 +28,12 @@ jobs:
       - name: Build
         run: |
           cd frontend
-          npm run build -- --base=/healthcare-portal/
+          npm run build
+          cp -r dist/* ../
+          cp .nojekyll ../
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: frontend/dist
+          folder: .
           branch: gh-pages
           clean: true 
