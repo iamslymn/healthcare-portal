@@ -6,6 +6,8 @@ const baseURL = import.meta.env.VITE_API_URL ||
     ? 'http://localhost:5000/api'
     : 'https://healthcare-portal-api.onrender.com/api');
 
+console.log('Axios Base URL:', baseURL); // For debugging
+
 const axiosInstance = axios.create({
   baseURL,
   headers: {
