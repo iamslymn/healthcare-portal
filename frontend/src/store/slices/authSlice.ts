@@ -51,12 +51,35 @@ export const register = createAsyncThunk(
     phoneNumber?: string;
   }, { rejectWithValue }) => {
     try {
+      console.log('Registering user with data:', { ...userData, password: '***HIDDEN***' });
       const response = await api.post('/auth/register', userData);
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      return { token, user };
+      console.log('Registration response:', response.data);
+      
+      // Store token and user in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Registration failed. Please try again.');
+      console.error('Registration error:', error);
+      
+      // Log detailed error information
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response data:', error.response.data);
+        console.error('Error response status:', error.response.status);
+        console.error('Error response headers:', error.response.headers);
+        return rejectWithValue(error.response.data?.message || 'Registration failed. Please try again.');
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('Error request:', error.request);
+        return rejectWithValue('No response from server. Please check your internet connection.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error message:', error.message);
+        return rejectWithValue('An error occurred during registration. Please try again.');
+      }
     }
   }
 );

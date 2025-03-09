@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Card, Typography, Alert, Select, Space, Row, Col, Image } from 'antd';
 import { UserOutlined, LockOutlined, PhoneOutlined, IdcardOutlined } from '@ant-design/icons';
 import styled from '@emotion/styled';
@@ -8,6 +8,7 @@ import { register } from '../store/slices/authSlice';
 import { RootState } from '../store';
 import { AppDispatch } from '../store';
 import { useThemeMode } from '../App';
+import { useAppDispatch } from 'react-redux';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -164,22 +165,27 @@ const StyledCard = styled(Card)<StyledProps>`
 const Register: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
   const { mode } = useThemeMode();
   const isDark = mode === 'dark';
   const [form] = Form.useForm();
+  const [loadingState, setLoading] = React.useState(false);
+  const [errorState, setError] = React.useState('');
 
   const handleSubmit = async (values: RegisterFormData) => {
-    if (values.password !== values.confirmPassword) {
-      form.setFields([
-        {
-          name: 'confirmPassword',
-          errors: ['Passwords do not match'],
-        },
-      ]);
-      return;
+    setLoading(true);
+    setError('');
+    
+    try {
+      console.log('Submitting registration form with values:', { ...values, password: '***HIDDEN***' });
+      const result = await dispatch(register(values)).unwrap();
+      console.log('Registration successful:', result);
+      navigate('/login');
+    } catch (error: any) {
+      console.error('Registration error in component:', error);
+      setError(typeof error === 'string' ? error : 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    await dispatch(register(values));
   };
 
   return (
@@ -204,10 +210,10 @@ const Register: React.FC = () => {
               </Text>
             </div>
 
-            {error && (
+            {errorState && (
               <Alert
                 message="Error"
-                description={error}
+                description={errorState}
                 type="error"
                 showIcon
                 style={{ marginBottom: 24 }}
@@ -338,7 +344,7 @@ const Register: React.FC = () => {
                 <Button
                   type="primary"
                   htmlType="submit"
-                  loading={loading}
+                  loading={loadingState}
                   block
                   size="large"
                 >
@@ -351,9 +357,9 @@ const Register: React.FC = () => {
                   color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)'
                 }}>
                   Already have an account?{' '}
-                  <RouterLink to="/login">
+                  <Link to="/login">
                     <Text style={{ color: '#1890ff' }}>Sign In</Text>
-                  </RouterLink>
+                  </Link>
                 </Text>
               </div>
             </Form>
