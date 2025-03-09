@@ -39,69 +39,61 @@ import {
   Security as SecurityIcon,
   Lock as LockIcon,
 } from '@mui/icons-material';
-import styled from 'styled-components';
+import { styled } from '@mui/material/styles';
 import { useThemeMode } from '../App';
 import api from '../services/api';
 
 // Styled components
-const StyledPaper = styled(Paper)<{ $isDark: boolean }>`
-  padding: 24px;
-  margin-bottom: 24px;
-  background-color: ${props => props.$isDark ? '#1a1a1a' : '#ffffff'};
-  border: 1px solid ${props => props.$isDark ? '#333333' : '#e0e0e0'};
-  color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.87)'};
-  box-shadow: ${props => props.$isDark ? '0 4px 20px rgba(0, 0, 0, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.1)'};
-  border-radius: 8px;
-`;
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: 24,
+  marginBottom: 24,
+  backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#ffffff',
+  border: `1px solid ${theme.palette.mode === 'dark' ? '#333333' : '#e0e0e0'}`,
+  color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.87)',
+  boxShadow: theme.palette.mode === 'dark' ? '0 4px 20px rgba(0, 0, 0, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.1)',
+  borderRadius: 8,
+}));
 
-const StyledTextField = styled(TextField)<{ $isDark: boolean }>`
-  .MuiInputBase-root {
-    background-color: ${props => props.$isDark ? '#2a2a2a' : '#ffffff'};
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.87)'};
-  }
-  
-  .MuiInputLabel-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'};
-  }
-  
-  .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.$isDark ? '#444444' : '#e0e0e0'};
-  }
-  
-  &:hover .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.$isDark ? '#666666' : '#b0b0b0'};
-  }
-  
-  &.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.$isDark ? '#90caf9' : '#1976d2'};
-  }
-`;
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiInputBase-root': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#2a2a2a' : '#ffffff',
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.87)',
+  },
+  '& .MuiInputLabel-root': {
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+  },
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.mode === 'dark' ? '#444444' : '#e0e0e0',
+  },
+  '&:hover .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.mode === 'dark' ? '#666666' : '#b0b0b0',
+  },
+  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+  },
+}));
 
-const StyledTabs = styled(Tabs)<{ $isDark: boolean }>`
-  .MuiTabs-indicator {
-    background-color: ${props => props.$isDark ? '#90caf9' : '#1976d2'};
-  }
-  
-  .MuiTab-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'};
-    
-    &.Mui-selected {
-      color: ${props => props.$isDark ? '#90caf9' : '#1976d2'};
-    }
-  }
-`;
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  '& .MuiTabs-indicator': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+  },
+  '& .MuiTab-root': {
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+    '&.Mui-selected': {
+      color: theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+    },
+  },
+}));
 
-const StyledListItem = styled(ListItem)<{ $isDark: boolean }>`
-  border-bottom: 1px solid ${props => props.$isDark ? '#333333' : '#f0f0f0'};
-  
-  .MuiListItemIcon-root {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.54)'};
-  }
-  
-  .MuiTypography-colorTextSecondary {
-    color: ${props => props.$isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'};
-  }
-`;
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  borderBottom: `1px solid ${theme.palette.mode === 'dark' ? '#333333' : '#f0f0f0'}`,
+  '& .MuiListItemIcon-root': {
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.54)',
+  },
+  '& .MuiTypography-colorTextSecondary': {
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+  },
+}));
 
 // Tab Panel component
 interface TabPanelProps {
@@ -154,7 +146,7 @@ const Profile = () => {
     education: user?.education || '',
     experience: user?.experience || 0,
     location: user?.location || '',
-    consultationFee: user?.consultationFee ? parseInt(user?.consultationFee.replace('$', '')) : 0,
+    consultationFee: user?.consultationFee ? parseInt(user?.consultationFee.replace('$', '') || '0') : 0,
     languages: user?.languages || [],
     availability: user?.availability || '',
     about: user?.about || '',
@@ -181,7 +173,7 @@ const Profile = () => {
         education: user.education || '',
         experience: user.experience || 0,
         location: user.location || '',
-        consultationFee: user.consultationFee ? parseInt(user.consultationFee.replace('$', '')) : 0,
+        consultationFee: user.consultationFee ? parseInt(user.consultationFee.replace('$', '') || '0') : 0,
         languages: user.languages || [],
         availability: user.availability || '',
         about: user.about || '',
@@ -338,12 +330,11 @@ const Profile = () => {
         </Grid>
         
         <Grid item xs={12}>
-          <StyledPaper $isDark={isDark}>
+          <StyledPaper>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <StyledTabs
                 value={tabValue}
                 onChange={handleTabChange}
-                $isDark={isDark}
                 variant="scrollable"
                 scrollButtons="auto"
                 aria-label="profile tabs"
@@ -359,7 +350,6 @@ const Profile = () => {
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                   <StyledTextField
-                    $isDark={isDark}
                     fullWidth
                     label="First Name"
                     name="firstName"
@@ -370,7 +360,6 @@ const Profile = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <StyledTextField
-                    $isDark={isDark}
                     fullWidth
                     label="Last Name"
                     name="lastName"
@@ -381,7 +370,6 @@ const Profile = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <StyledTextField
-                    $isDark={isDark}
                     fullWidth
                     label="Email"
                     name="email"
@@ -392,7 +380,6 @@ const Profile = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <StyledTextField
-                    $isDark={isDark}
                     fullWidth
                     label="Phone Number"
                     name="phoneNumber"
@@ -440,7 +427,6 @@ const Profile = () => {
                     
                     <Grid item xs={12} sm={6}>
                       <StyledTextField
-                        $isDark={isDark}
                         fullWidth
                         label="Education"
                         name="education"
@@ -453,7 +439,6 @@ const Profile = () => {
                     
                     <Grid item xs={12} sm={6}>
                       <StyledTextField
-                        $isDark={isDark}
                         fullWidth
                         label="Years of Experience"
                         name="experience"
@@ -467,7 +452,6 @@ const Profile = () => {
                     
                     <Grid item xs={12} sm={6}>
                       <StyledTextField
-                        $isDark={isDark}
                         fullWidth
                         label="Location"
                         name="location"
@@ -480,7 +464,6 @@ const Profile = () => {
                     
                     <Grid item xs={12} sm={6}>
                       <StyledTextField
-                        $isDark={isDark}
                         fullWidth
                         label="Consultation Fee ($)"
                         name="consultationFee"
@@ -512,7 +495,6 @@ const Profile = () => {
                     
                     <Grid item xs={12}>
                       <StyledTextField
-                        $isDark={isDark}
                         fullWidth
                         label="About"
                         name="about"
@@ -561,7 +543,7 @@ const Profile = () => {
             
             <TabPanel value={tabValue} index={1}>
               <List>
-                <StyledListItem $isDark={isDark}>
+                <StyledListItem>
                   <ListItemIcon>
                     <LockIcon />
                   </ListItemIcon>
@@ -587,7 +569,7 @@ const Profile = () => {
                   </ListItemSecondaryAction>
                 </StyledListItem>
                 <Divider />
-                <StyledListItem $isDark={isDark}>
+                <StyledListItem>
                   <ListItemIcon>
                     <SecurityIcon />
                   </ListItemIcon>
@@ -617,7 +599,7 @@ const Profile = () => {
             
             <TabPanel value={tabValue} index={2}>
               <List>
-                <StyledListItem $isDark={isDark}>
+                <StyledListItem>
                   <ListItemIcon>
                     <NotificationsIcon />
                   </ListItemIcon>
@@ -647,7 +629,7 @@ const Profile = () => {
             
             <TabPanel value={tabValue} index={3}>
               <List>
-                <StyledListItem $isDark={isDark}>
+                <StyledListItem>
                   <ListItemIcon>
                     <LanguageIcon />
                   </ListItemIcon>
@@ -673,7 +655,7 @@ const Profile = () => {
                   </ListItemSecondaryAction>
                 </StyledListItem>
                 <Divider />
-                <StyledListItem $isDark={isDark}>
+                <StyledListItem>
                   <ListItemIcon>
                     <PaletteIcon />
                   </ListItemIcon>
