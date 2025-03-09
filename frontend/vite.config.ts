@@ -18,4 +18,7 @@ export default defineConfig({
       },
     },
   },
+  // Base path for GitHub Pages deployment
+  // Will be overridden by --base flag when building for GitHub Pages
+  base: '/',
 }); 

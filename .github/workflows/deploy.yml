@@ -28,7 +28,8 @@ jobs:
       - name: Build
         run: |
           cd frontend
-          npm run build
+          # Set the base path for GitHub Pages
+          npm run build -- --base=/healthcare-portal/
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
