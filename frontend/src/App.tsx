@@ -28,71 +28,67 @@ export const ThemeModeContext = createContext({
   mode: 'light' as 'light' | 'dark'
 });
 
-export const useThemeMode = () => useContext(ThemeModeContext);
-
-const { defaultAlgorithm, darkAlgorithm } = theme;
+// Get the base path for GitHub Pages deployment
+const basePath = import.meta.env.BASE_URL || '/';
 
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const [mode, setMode] = useState<'light' | 'dark'>(() => {
-    const savedMode = localStorage.getItem('themeMode');
-    return (savedMode as 'light' | 'dark') || 'light';
-  });
 
-  // Update data-theme attribute when mode changes
+  // Theme state
+  const [mode, setMode] = useState<'light' | 'dark'>(
+    localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'
+  );
+
+  // Set theme in localStorage when it changes
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', mode);
+    localStorage.setItem('theme', mode);
+    // Apply theme to body
+    document.body.setAttribute('data-theme', mode);
   }, [mode]);
 
+  // Toggle theme function
+  const toggleTheme = () => {
+    setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
+  };
+
+  // Theme context value
   const themeMode = useMemo(
     () => ({
-      toggleTheme: () => {
-        setMode((prevMode) => {
-          const newMode = prevMode === 'light' ? 'dark' : 'light';
-          localStorage.setItem('themeMode', newMode);
-          return newMode;
-        });
-      },
-      mode,
+      toggleTheme,
+      mode
     }),
     [mode]
   );
 
+  // Ant Design theme
   const antdTheme = {
-    algorithm: mode === 'dark' ? darkAlgorithm : defaultAlgorithm,
+    algorithm: mode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
     token: {
-      colorPrimary: '#2196f3',
-      borderRadius: 8,
+      colorPrimary: '#1976d2',
+      borderRadius: 4,
       colorBgContainer: mode === 'dark' ? '#141414' : '#ffffff',
       colorBgElevated: mode === 'dark' ? '#1f1f1f' : '#ffffff',
+      colorBorder: mode === 'dark' ? '#303030' : '#f0f0f0',
       colorText: mode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',
       colorTextSecondary: mode === 'dark' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0, 0, 0, 0.45)',
-      colorBgLayout: mode === 'dark' ? '#0a0a0a' : '#f0f2f5',
-      colorBorder: mode === 'dark' ? '#303030' : '#f0f0f0',
     },
     components: {
-      Button: {
-        borderRadius: 8,
+      Menu: {
+        colorItemBg: mode === 'dark' ? '#141414' : '#ffffff',
+        colorItemText: mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.65)',
+        colorItemTextSelected: mode === 'dark' ? '#1890ff' : '#1890ff',
+        colorItemBgSelected: mode === 'dark' ? '#111b26' : '#e6f7ff',
+        colorItemTextHover: mode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',
       },
       Card: {
-        borderRadius: 12,
+        colorBgContainer: mode === 'dark' ? '#1f1f1f' : '#ffffff',
+        colorBorderSecondary: mode === 'dark' ? '#303030' : '#f0f0f0',
       },
-      Layout: {
-        colorBgBody: mode === 'dark' ? '#0a0a0a' : '#f0f2f5',
-        colorBgHeader: mode === 'dark' ? '#141414' : '#ffffff',
-        colorBgContainer: mode === 'dark' ? '#141414' : '#ffffff',
-        colorBgLayout: mode === 'dark' ? '#0a0a0a' : '#f0f2f5',
-        colorBorder: mode === 'dark' ? '#303030' : '#f0f0f0',
-        headerBg: mode === 'dark' ? '#141414' : '#ffffff',
-        siderBg: mode === 'dark' ? '#141414' : '#ffffff',
-        headerHeight: 64,
-      },
-      Menu: {
-        darkItemBg: '#141414',
-        darkItemSelectedBg: '#1f1f1f',
-        darkItemHoverBg: '#1f1f1f',
-        darkItemColor: 'rgba(255, 255, 255, 0.85)',
-        darkSubMenuItemBg: '#141414',
+      Table: {
+        colorBgContainer: mode === 'dark' ? '#1f1f1f' : '#ffffff',
+        colorText: mode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',
+        colorTextHeading: mode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',
+        colorBorderSecondary: mode === 'dark' ? '#303030' : '#f0f0f0',
       },
     },
   };
@@ -108,7 +104,7 @@ function App() {
           }}
           data-theme={mode}
         >
-          <Router>
+          <Router basename={basePath}>
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={!isAuthenticated ? <Landing /> : <Navigate to="/dashboard" />} />
