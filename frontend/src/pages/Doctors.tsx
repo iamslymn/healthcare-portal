@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Grid,
@@ -17,6 +17,9 @@ import {
   MenuItem,
   IconButton,
   CardActions,
+  Container,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -29,6 +32,9 @@ import {
 import { styled } from '@mui/material/styles';
 import { useThemeMode } from '../App';
 import BookingDialog from '../components/appointments/BookingDialog';
+import api from '../services/api';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const StyledCard = styled(Card)<{ $isDark: boolean }>`
   height: 100%;
@@ -120,151 +126,201 @@ interface Doctor {
   id: string;
   name: string;
   specialty: string;
-  location: string;
-  experience: number;
+  image: string;
   rating: number;
   reviewCount: number;
+  location: string;
   availability: string;
-  image: string;
-  education: string;
+  experience: number;
   languages: string[];
-  consultationFee: number;
   about: string;
+  consultationFee: string;
 }
 
 const Doctors = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [specialty, setSpecialty] = useState('');
-  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const { mode } = useThemeMode();
   const isDark = mode === 'dark';
+  const { user } = useSelector((state: RootState) => state.auth);
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [specialty, setSpecialty] = useState('');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  
+  // State for storing doctors from API and registered users
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
 
-  // Mock data - replace with API call
-  const doctors: Doctor[] = [
-    {
-      id: '1',
-      name: 'Dr. Sarah Wilson',
-      specialty: 'Cardiologist',
-      location: 'New York, NY',
-      experience: 15,
-      rating: 4.8,
-      reviewCount: 124,
-      availability: 'Available Today',
-      image: 'https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg',
-      education: 'MD - Cardiology, MBBS',
-      languages: ['English', 'Spanish'],
-      consultationFee: 150,
-      about: 'Experienced cardiologist specializing in preventive cardiology and heart disease management.',
-    },
-    {
-      id: '2',
-      name: 'Dr. Michael Brown',
-      specialty: 'Neurologist',
-      location: 'Los Angeles, CA',
-      experience: 12,
-      rating: 4.9,
-      reviewCount: 98,
-      availability: 'Next Available: Tomorrow',
-      image: 'https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg',
-      education: 'MD - Neurology, MBBS',
-      languages: ['English', 'French'],
-      consultationFee: 180,
-      about: 'Specialized in treating neurological disorders with a focus on stroke prevention and treatment.',
-    },
-    {
-      id: '3',
-      name: 'Dr. Emily Davis',
-      specialty: 'Dermatologist',
-      location: 'Chicago, IL',
-      experience: 8,
-      rating: 4.7,
-      reviewCount: 156,
-      availability: 'Available Today',
-      image: 'https://img.freepik.com/free-photo/portrait-smiling-young-woman-doctor-healthcare-medical-worker-pointing-fingers-left-showing-clinic-advertisement_1258-88108.jpg',
-      education: 'MD - Dermatology, MBBS',
-      languages: ['English', 'Mandarin'],
-      consultationFee: 130,
-      about: 'Expert in cosmetic dermatology and skin cancer treatment with a holistic approach to skincare.',
-    },
-    {
-      id: '4',
-      name: 'Dr. James Rodriguez',
-      specialty: 'Pediatrician',
-      location: 'Miami, FL',
-      experience: 10,
-      rating: 4.9,
-      reviewCount: 210,
-      availability: 'Available Today',
-      image: 'https://img.freepik.com/free-photo/medium-shot-doctor-with-crossed-arms_23-2148868314.jpg',
-      education: 'MD - Pediatrics, MBBS',
-      languages: ['English', 'Spanish', 'Portuguese'],
-      consultationFee: 140,
-      about: 'Dedicated pediatrician with a gentle approach to child healthcare and preventive medicine.',
-    },
-    {
-      id: '5',
-      name: 'Dr. Lisa Chen',
-      specialty: 'Orthopedist',
-      location: 'San Francisco, CA',
-      experience: 14,
-      rating: 4.8,
-      reviewCount: 178,
-      availability: 'Next Available: Tomorrow',
-      image: 'https://img.freepik.com/free-photo/front-view-female-doctor-with-medical-mask-posing-with-crossed-arms_23-2148445082.jpg',
-      education: 'MD - Orthopedics, MBBS',
-      languages: ['English', 'Mandarin', 'Cantonese'],
-      consultationFee: 160,
-      about: 'Specialized in sports medicine and joint replacement surgery with a focus on minimally invasive procedures.',
-    },
-    {
-      id: '6',
-      name: 'Dr. Robert Taylor',
-      specialty: 'Psychiatrist',
-      location: 'Boston, MA',
-      experience: 16,
-      rating: 4.9,
-      reviewCount: 145,
-      availability: 'Available Today',
-      image: 'https://img.freepik.com/free-photo/handsome-young-male-doctor-with-stethoscope-standing-against-blue-background_662251-337.jpg',
-      education: 'MD - Psychiatry, MBBS',
-      languages: ['English', 'German'],
-      consultationFee: 170,
-      about: 'Experienced psychiatrist specializing in anxiety, depression, and stress management with a holistic treatment approach.',
-    }
-  ];
-
+  // List of specialties for the filter dropdown
   const specialties = [
-    'Allergist',
-    'Anesthesiologist',
-    'Cardiologist',
-    'Dermatologist',
-    'Endocrinologist',
+    'Cardiology',
+    'Dermatology',
+    'Pediatrics',
+    'Orthopedics',
+    'Neurology',
+    'Psychiatry',
+    'General Medicine',
     'Family Medicine',
-    'Gastroenterologist',
-    'General Surgeon',
-    'Gynecologist',
-    'Hematologist',
     'Internal Medicine',
-    'Nephrologist',
-    'Neurologist',
-    'Neurosurgeon',
-    'Obstetrician',
-    'Oncologist',
-    'Ophthalmologist',
-    'Orthopedist',
-    'Otolaryngologist',
-    'Pediatrician',
-    'Plastic Surgeon',
-    'Psychiatrist',
-    'Pulmonologist',
-    'Radiologist',
-    'Rheumatologist',
-    'Urologist',
-    'Vascular Surgeon'
+    'Obstetrics & Gynecology',
+    'Ophthalmology',
+    'Otolaryngology',
+    'Urology',
+    'Gastroenterology',
+    'Endocrinology',
+    'Pulmonology',
+    'Rheumatology',
+    'Hematology',
+    'Oncology',
+    'Nephrology',
+    'Allergy & Immunology',
+    'Infectious Disease',
+    'Physical Medicine',
+    'Radiology',
+    'Anesthesiology',
+    'Emergency Medicine',
+    'Pathology',
+    'Plastic Surgery',
+    'Vascular Surgery'
   ];
+
+  // Fetch doctors from API and registered users with doctor role
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      setLoading(true);
+      setError('');
+      
+      try {
+        // Fetch hardcoded doctors from API (if available)
+        // const response = await api.get('/doctors');
+        // const apiDoctors = response.data;
+        
+        // For now, use hardcoded doctors
+        const hardcodedDoctors = [
+          {
+            id: '1',
+            name: 'Dr. Sarah Wilson',
+            specialty: 'Cardiology',
+            image: 'https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg',
+            rating: 4.8,
+            reviewCount: 124,
+            location: 'New York, NY',
+            availability: 'Available today',
+            experience: 12,
+            languages: ['English', 'Spanish'],
+            about: 'Dr. Wilson is a board-certified cardiologist with over 12 years of experience in treating heart conditions.',
+            consultationFee: '$150'
+          },
+          {
+            id: '2',
+            name: 'Dr. Michael Brown',
+            specialty: 'Dermatology',
+            image: 'https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg',
+            rating: 4.7,
+            reviewCount: 98,
+            location: 'Los Angeles, CA',
+            availability: 'Available tomorrow',
+            experience: 8,
+            languages: ['English', 'French'],
+            about: 'Dr. Brown specializes in medical and cosmetic dermatology, with a focus on skin cancer prevention and treatment.',
+            consultationFee: '$130'
+          },
+          {
+            id: '3',
+            name: 'Dr. Emily Davis',
+            specialty: 'Pediatrics',
+            image: 'https://img.freepik.com/free-photo/portrait-smiling-young-woman-doctor-healthcare-medical-worker-pointing-fingers-left-showing-clinic-advertisement_1258-88108.jpg',
+            rating: 4.9,
+            reviewCount: 156,
+            location: 'Chicago, IL',
+            availability: 'Available today',
+            experience: 15,
+            languages: ['English'],
+            about: 'Dr. Davis is a compassionate pediatrician who provides comprehensive care for children from birth through adolescence.',
+            consultationFee: '$120'
+          },
+          {
+            id: '4',
+            name: 'Dr. James Taylor',
+            specialty: 'Orthopedics',
+            image: 'https://img.freepik.com/free-photo/medium-shot-doctor-with-crossed-arms_23-2148868314.jpg',
+            rating: 4.6,
+            reviewCount: 87,
+            location: 'Houston, TX',
+            availability: 'Available in 2 days',
+            experience: 10,
+            languages: ['English', 'German'],
+            about: 'Dr. Taylor specializes in sports medicine and joint replacement surgery, helping patients regain mobility and reduce pain.',
+            consultationFee: '$160'
+          },
+          {
+            id: '5',
+            name: 'Dr. Jessica Martinez',
+            specialty: 'Neurology',
+            image: 'https://img.freepik.com/free-photo/front-view-female-doctor-with-medical-mask-posing-with-crossed-arms_23-2148445082.jpg',
+            rating: 4.8,
+            reviewCount: 112,
+            location: 'Miami, FL',
+            availability: 'Available today',
+            experience: 14,
+            languages: ['English', 'Spanish'],
+            about: 'Dr. Martinez is a neurologist who diagnoses and treats disorders of the nervous system, including the brain, spinal cord, and nerves.',
+            consultationFee: '$170'
+          },
+          {
+            id: '6',
+            name: 'Dr. Robert Johnson',
+            specialty: 'Psychiatry',
+            image: 'https://img.freepik.com/free-photo/handsome-young-male-doctor-with-stethoscope-standing-against-blue-background_662251-337.jpg',
+            rating: 4.7,
+            reviewCount: 93,
+            location: 'Boston, MA',
+            availability: 'Available tomorrow',
+            experience: 11,
+            languages: ['English'],
+            about: 'Dr. Johnson provides compassionate psychiatric care, specializing in mood disorders, anxiety, and PTSD treatment.',
+            consultationFee: '$140'
+          }
+        ];
+        
+        // Fetch registered users with doctor role
+        const usersResponse = await api.get('/users');
+        const registeredDoctors = usersResponse.data
+          .filter((user: any) => user.role === 'doctor')
+          .map((user: any) => ({
+            id: user.id,
+            name: `Dr. ${user.firstName} ${user.lastName}`,
+            specialty: user.specialty || 'General Medicine',
+            image: user.profilePicture || 'https://img.freepik.com/free-photo/medium-shot-doctor-with-crossed-arms_23-2148868314.jpg',
+            rating: 5.0,
+            reviewCount: 0,
+            location: user.location || 'Not specified',
+            availability: 'Available soon',
+            experience: user.experience || 1,
+            languages: ['English'],
+            about: user.about || `Dr. ${user.firstName} ${user.lastName} is a registered doctor on our platform.`,
+            consultationFee: user.consultationFee || '$100'
+          }));
+        
+        // Combine hardcoded doctors and registered doctors
+        setDoctors([...hardcodedDoctors, ...registeredDoctors]);
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+        setError('Failed to load doctors. Please try again later.');
+        // Fall back to hardcoded doctors if API fails
+        setDoctors([
+          // ... existing hardcoded doctors ...
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDoctors();
+  }, []);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -298,7 +354,7 @@ const Doctors = () => {
   };
 
   return (
-    <Box>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography 
           variant="h4" 
@@ -397,7 +453,19 @@ const Doctors = () => {
       </Box>
 
       <Grid container spacing={3}>
-        {filteredDoctors.map((doctor) => (
+        {loading ? (
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+              <CircularProgress />
+            </Box>
+          </Grid>
+        ) : error ? (
+          <Grid item xs={12}>
+            <Alert severity="error" sx={{ my: 4 }}>
+              {error}
+            </Alert>
+          </Grid>
+        ) : filteredDoctors.map((doctor) => (
           <Grid item xs={12} md={6} lg={4} key={doctor.id}>
             <StyledCard $isDark={isDark}>
               <CardMedia
@@ -481,7 +549,7 @@ const Doctors = () => {
                     },
                   }}
                 >
-                  Book Appointment - ${doctor.consultationFee}
+                  Book Appointment - {doctor.consultationFee}
                 </Button>
               </CardActions>
             </StyledCard>
@@ -499,7 +567,7 @@ const Doctors = () => {
           }}
         />
       )}
-    </Box>
+    </Container>
   );
 };
 

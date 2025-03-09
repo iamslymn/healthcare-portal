@@ -13,6 +13,15 @@ interface User {
   lastName: string;
   role: string;
   profilePicture?: string;
+  // Additional fields for doctor profiles
+  specialty?: string;
+  location?: string;
+  experience?: number;
+  languages?: string[];
+  about?: string;
+  consultationFee?: string;
+  education?: string;
+  availability?: string;
 }
 
 interface AuthState {
