@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   // Base path for GitHub Pages deployment
-  base: '',
+  base: '/healthcare-portal/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
