@@ -1,0 +1,368 @@
+@import 'antd/dist/reset.css';
+
+:root {
+  --primary-color: #2196f3;
+  --border-radius: 8px;
+  --dark-bg: #141414;
+  --darker-bg: #0a0a0a;
+  --dark-component-bg: #1f1f1f;
+  --dark-border: #303030;
+  --dark-text: rgba(255, 255, 255, 0.85);
+  --dark-text-secondary: rgba(255, 255, 255, 0.45);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  background-color: var(--darker-bg);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5715;
+  transition: all 0.3s ease;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom scrollbar - Light Mode */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bfbfbf;
+  border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Dark mode scrollbar */
+html[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: var(--dark-component-bg);
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: #434343;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: #595959;
+}
+
+/* Ant Design customizations */
+.ant-btn {
+  border-radius: var(--border-radius);
+}
+
+.ant-input, .ant-input-affix-wrapper {
+  border-radius: var(--border-radius);
+}
+
+.ant-card {
+  border-radius: calc(var(--border-radius) * 1.5);
+}
+
+.ant-alert {
+  border-radius: var(--border-radius);
+}
+
+/* Dark mode specific styles */
+html[data-theme='dark'] {
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] body {
+  background-color: var(--darker-bg);
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-layout {
+  background: var(--darker-bg);
+}
+
+html[data-theme='dark'] .ant-layout-header {
+  background: #141414;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid #303030;
+}
+
+html[data-theme='dark'] .ant-layout-sider {
+  background: #141414;
+  border-right: 1px solid #303030;
+}
+
+html[data-theme='dark'] .ant-menu {
+  background: #141414;
+  color: rgba(255, 255, 255, 0.85);
+  border-right: 1px solid #303030;
+}
+
+html[data-theme='dark'] .ant-menu-item {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+html[data-theme='dark'] .ant-menu-item:hover {
+  color: #1890ff;
+}
+
+html[data-theme='dark'] .ant-menu-item-selected {
+  background-color: #1f1f1f !important;
+  color: #1890ff;
+}
+
+html[data-theme='dark'] .ant-menu-item .anticon,
+html[data-theme='dark'] .ant-menu-submenu-title .anticon {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+html[data-theme='dark'] .ant-menu-item:hover .anticon,
+html[data-theme='dark'] .ant-menu-submenu-title:hover .anticon {
+  color: #1890ff;
+}
+
+html[data-theme='dark'] .ant-menu-item-selected .anticon {
+  color: #1890ff;
+}
+
+html[data-theme='dark'] .ant-card {
+  background: var(--dark-bg);
+  border-color: var(--dark-border);
+}
+
+html[data-theme='dark'] .ant-input {
+  background: var(--dark-component-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-input-affix-wrapper {
+  background: var(--dark-component-bg);
+  border-color: var(--dark-border);
+}
+
+html[data-theme='dark'] .ant-input-affix-wrapper input {
+  background: var(--dark-component-bg);
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-select-selector {
+  background: var(--dark-component-bg) !important;
+  border-color: var(--dark-border) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme='dark'] .ant-select-dropdown {
+  background: var(--dark-bg);
+  border-color: var(--dark-border);
+}
+
+html[data-theme='dark'] .ant-select-item {
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-select-item-option-selected {
+  background: var(--dark-component-bg);
+}
+
+html[data-theme='dark'] .ant-drawer {
+  background: #141414;
+}
+
+html[data-theme='dark'] .ant-drawer-content {
+  background: #141414;
+  border-right: 1px solid #303030;
+}
+
+html[data-theme='dark'] .ant-drawer-header {
+  background: #141414;
+  border-bottom: 1px solid #303030;
+}
+
+html[data-theme='dark'] .ant-drawer-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+html[data-theme='dark'] .ant-drawer-close {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+html[data-theme='dark'] .ant-drawer-close:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+html[data-theme='dark'] .ant-btn-text {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+html[data-theme='dark'] .ant-btn-text:hover {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme='dark'] .ant-table {
+  background: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-table-thead > tr > th {
+  background: var(--dark-component-bg);
+  border-bottom: 1px solid var(--dark-border);
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--dark-border);
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-table-tbody > tr:hover > td {
+  background: var(--dark-component-bg);
+}
+
+html[data-theme='dark'] .ant-layout-content {
+  background: var(--darker-bg);
+}
+
+html[data-theme='dark'] .ant-tabs-tab {
+  color: var(--dark-text-secondary);
+}
+
+html[data-theme='dark'] .ant-tabs-tab-active {
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-tabs-content {
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-list {
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-list-item {
+  border-bottom: 1px solid var(--dark-border);
+}
+
+html[data-theme='dark'] .ant-empty {
+  color: var(--dark-text-secondary);
+}
+
+html[data-theme='dark'] .ant-pagination-item {
+  background: var(--dark-component-bg);
+  border-color: var(--dark-border);
+}
+
+html[data-theme='dark'] .ant-pagination-item a {
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-pagination-item-active {
+  border-color: var(--primary-color);
+}
+
+html[data-theme='dark'] .ant-btn {
+  border-color: var(--dark-border);
+}
+
+html[data-theme='dark'] .ant-btn-default {
+  background: var(--dark-component-bg);
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-btn-default:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+html[data-theme='dark'] .ant-form-item-label > label {
+  color: var(--dark-text);
+}
+
+html[data-theme='dark'] .ant-form-item-explain,
+html[data-theme='dark'] .ant-form-item-extra {
+  color: var(--dark-text-secondary);
+}
+
+/* Footer dark mode styles */
+html[data-theme='dark'] .ant-layout-footer {
+  background: var(--dark-bg);
+  color: var(--dark-text);
+  border-top: 1px solid var(--dark-border);
+}
+
+html[data-theme='dark'] .footer-links a {
+  color: var(--dark-text-secondary);
+}
+
+html[data-theme='dark'] .footer-links a:hover {
+  color: var(--primary-color);
+}
+
+html[data-theme='dark'] .footer-social-icons {
+  color: var(--dark-text-secondary);
+}
+
+html[data-theme='dark'] .footer-social-icons a {
+  color: var(--dark-text-secondary);
+}
+
+html[data-theme='dark'] .footer-social-icons a:hover {
+  color: var(--primary-color);
+}
+
+html[data-theme='dark'] .footer-bottom {
+  border-top: 1px solid var(--dark-border);
+  color: var(--dark-text-secondary);
+}
+
+html[data-theme='dark'] .footer-contact-info {
+  color: var(--dark-text-secondary);
+}
+
+html[data-theme='dark'] .footer-divider {
+  background-color: var(--dark-border);
+}
+
+/* Transitions */
+.ant-layout,
+.ant-layout-header,
+.ant-layout-sider,
+.ant-menu,
+.ant-card,
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-drawer-content,
+.ant-modal-content,
+.ant-table,
+body,
+#root {
+  transition: all 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ant-card {
+    border-radius: var(--border-radius);
+  }
+} 
