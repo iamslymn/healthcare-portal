@@ -1,0 +1,63 @@
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:18:04.191Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:18:17.639Z"}
+{"level":"error","message":"MongoDB Connection Error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017","reason":{"commonWireVersion":0,"compatible":true,"heartbeatFrequencyMS":10000,"localThresholdMS":15,"logicalSessionTimeoutMinutes":null,"maxElectionId":null,"maxSetVersion":null,"servers":{},"setName":null,"stale":false,"type":"Unknown"},"stack":"MongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017\n    at _handleConnectionErrors (C:\\Users\\suley\\Desktop\\Draft works AI\\Cursor\\Web site_1\\backend\\node_modules\\mongoose\\lib\\connection.js:816:11)\n    at NativeConnection.openUri (C:\\Users\\suley\\Desktop\\Draft works AI\\Cursor\\Web site_1\\backend\\node_modules\\mongoose\\lib\\connection.js:791:11)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:555:9)\n    at processTimers (node:internal/timers:529:7)\n    at async connectDB (C:\\Users\\suley\\Desktop\\Draft works AI\\Cursor\\Web site_1\\backend\\src\\config\\database.ts:8:5)","timestamp":"2025-02-10T01:18:47.653Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:19:42.380Z"}
+{"level":"error","message":"MongoDB Connection Error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017","reason":{"commonWireVersion":0,"compatible":true,"heartbeatFrequencyMS":10000,"localThresholdMS":15,"logicalSessionTimeoutMinutes":null,"maxElectionId":null,"maxSetVersion":null,"servers":{},"setName":null,"stale":false,"type":"Unknown"},"stack":"MongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017\n    at _handleConnectionErrors (C:\\Users\\suley\\Desktop\\Draft works AI\\Cursor\\Web site_1\\backend\\node_modules\\mongoose\\lib\\connection.js:816:11)\n    at NativeConnection.openUri (C:\\Users\\suley\\Desktop\\Draft works AI\\Cursor\\Web site_1\\backend\\node_modules\\mongoose\\lib\\connection.js:791:11)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:555:9)\n    at processTimers (node:internal/timers:529:7)\n    at async connectDB (C:\\Users\\suley\\Desktop\\Draft works AI\\Cursor\\Web site_1\\backend\\src\\config\\database.ts:8:5)","timestamp":"2025-02-10T01:20:12.383Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:28:10.892Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:28:10.908Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:28:31.840Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:28:31.857Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:31:31.983Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:31:32.001Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:40:33.461Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:40:33.476Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:45:55.908Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:45:55.927Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:48:09.447Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:48:09.461Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:51:26.796Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:51:26.817Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T01:56:49.349Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T01:56:49.363Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T10:40:23.780Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T10:40:23.795Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T15:29:41.772Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T15:29:41.787Z"}
+{"level":"info","message":"Server is running on port 5001","timestamp":"2025-02-10T16:44:42.361Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T16:44:42.375Z"}
+{"level":"info","message":"Server is running on port 5002","timestamp":"2025-02-10T16:46:12.136Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T16:46:12.150Z"}
+{"level":"info","message":"Server is running on port 5003","timestamp":"2025-02-10T16:47:33.627Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T16:47:33.641Z"}
+{"level":"info","message":"Server is running on port 5004","timestamp":"2025-02-10T16:50:18.987Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T16:50:19.002Z"}
+{"level":"info","message":"Server is running on port 5004","timestamp":"2025-02-10T16:54:32.506Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T16:54:32.527Z"}
+{"level":"info","message":"Server is running on port 5004","timestamp":"2025-02-10T17:16:35.375Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T17:16:35.393Z"}
+{"level":"info","message":"Server is running on port 5004","timestamp":"2025-02-10T17:27:28.754Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T17:27:28.771Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T19:05:37.186Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T19:05:37.204Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T20:23:48.845Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T20:23:48.860Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T20:42:05.910Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T20:42:05.926Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T20:56:03.906Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T20:56:03.923Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T20:56:16.720Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T20:56:16.736Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T20:56:21.173Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T20:56:21.190Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T20:56:26.536Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T20:56:26.558Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-10T20:56:30.696Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-10T20:56:30.710Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-12T00:41:11.765Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-12T00:41:11.788Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-02-15T12:22:34.596Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-02-15T12:22:34.612Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-03-06T18:54:21.010Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-03-06T18:54:21.031Z"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2025-03-08T23:55:33.449Z"}
+{"level":"info","message":"MongoDB Connected Successfully","timestamp":"2025-03-08T23:55:33.470Z"}
