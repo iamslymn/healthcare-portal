@@ -1,27 +1,29 @@
-# Doctor-Patient Appointment System
+# Healthcare Portal
 
-A modern web application for managing doctor-patient appointments, consultations, and medical services.
+A modern healthcare portal application for managing doctor appointments, medical records, and patient-doctor communication.
 
 ## Features
 
-- User Authentication & Registration (Doctors & Patients)
-- Profile Management
-- Appointment Scheduling
-- Real-time Chat & Video Consultations
-- Search & Filter Doctors
-- Payment Integration
-- Admin Dashboard
-- Notifications System
+- User authentication (login, register, forgot password)
+- Dashboard for patients and doctors
+- Appointment scheduling and management
+- Medical records management
+- Messaging system
+- Profile management
+- Dark/light mode
+- Responsive design
 
 ## Tech Stack
 
 ### Frontend
-- React 18
+- React
 - TypeScript
 - Material-UI
+- Ant Design
 - Redux Toolkit
-- Socket.io Client
+- React Router
 - Axios
+- Vite
 
 ### Backend
 - Node.js
@@ -31,86 +33,54 @@ A modern web application for managing doctor-patient appointments, consultations
 - JWT Authentication
 - Socket.io
 
-### DevOps & Tools
-- Docker
-- ESLint
-- Prettier
-- Jest
-- GitHub Actions
-
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+
+- Node.js (v16+)
 - MongoDB
-- npm or yarn
 
 ### Installation
 
 1. Clone the repository
 ```bash
-git clone [repository-url]
+git clone https://github.com/YOUR_USERNAME/healthcare-portal.git
+cd healthcare-portal
 ```
 
 2. Install dependencies
 ```bash
-# Install frontend dependencies
-cd frontend
+# Install backend dependencies
+cd backend
 npm install
 
-# Install backend dependencies
-cd ../backend
+# Install frontend dependencies
+cd ../frontend
 npm install
 ```
 
 3. Set up environment variables
 ```bash
-# Frontend
-cp frontend/.env.example frontend/.env
-
-# Backend
-cp backend/.env.example backend/.env
+# In the backend directory, create a .env file based on .env.example
+cp .env.example .env
+# Edit the .env file with your MongoDB connection string and JWT secret
 ```
 
 4. Start the development servers
 ```bash
-# Start backend server
-cd backend
+# Start backend server (from the backend directory)
 npm run dev
 
-# Start frontend server
-cd frontend
-npm start
+# Start frontend server (from the frontend directory)
+npm run dev
 ```
 
-## Project Structure
+5. Open your browser and navigate to:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
 
-```
-.
-├── frontend/                # React frontend application
-│   ├── src/
-│   │   ├── components/     # Reusable components
-│   │   ├── pages/         # Page components
-│   │   ├── services/      # API services
-│   │   ├── store/         # Redux store
-│   │   └── types/         # TypeScript types
-│   └── public/            # Static files
-│
-├── backend/                # Node.js backend application
-│   ├── src/
-│   │   ├── controllers/   # Route controllers
-│   │   ├── models/        # Database models
-│   │   ├── routes/        # API routes
-│   │   ├── services/      # Business logic
-│   │   └── utils/         # Utility functions
-│   └── tests/             # Backend tests
-│
-└── README.md              # Project documentation
-```
+## Deployment
 
-## Contributing
-
-Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+The frontend is automatically deployed to GitHub Pages when changes are pushed to the master branch.
 
 ## License
 
