@@ -1,30 +1,36 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Using the correct backend port
+// Use environment variable for API URL or fallback to a deployed backend URL
+const baseURL = import.meta.env.VITE_API_URL || 
+  (window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api'
+    : 'https://healthcare-portal-api.onrender.com/api');
+
+const axiosInstance = axios.create({
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add a request interceptor
-api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+// Add a request interceptor to include the auth token in requests
+axiosInstance.interceptors.request.use(
+  (config) => {
     const token = localStorage.getItem('token');
-    if (token && config.headers) {
+    if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error: AxiosError) => {
+  (error) => {
     return Promise.reject(error);
   }
 );
 
 // Add a response interceptor
-api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error: AxiosError) => {
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('token');
@@ -34,4 +40,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api; 
+export default axiosInstance; 
