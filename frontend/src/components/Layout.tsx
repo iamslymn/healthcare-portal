@@ -26,7 +26,6 @@ import {
   ListItemAvatar,
   Paper,
   Button,
-  Tooltip,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -40,7 +39,6 @@ import {
   ExitToApp as LogoutIcon,
   LocalHospital as HospitalIcon,
   MedicalServices as MedicalIcon,
-  VideoCall as VideoCallIcon,
   Close as CloseIcon,
   Brightness4 as DarkModeIcon,
   Brightness7 as LightModeIcon,

@@ -75,14 +75,14 @@ const Settings = () => {
   };
 
   const handleSaveChanges = async () => {
-    setIsSaving(true);
     try {
-      const response = await api.put('/users/settings', settings);
+      setIsSaving(true);
+      await api.put('/users/settings', settings);
       message.success('Settings saved successfully');
       setHasChanges(false);
     } catch (error) {
+      console.error('Failed to save settings:', error);
       message.error('Failed to save settings');
-      console.error('Error saving settings:', error);
     } finally {
       setIsSaving(false);
     }
